@@ -2,7 +2,14 @@ const express = require("express");
 const app = express();
 const port = process.env.PORT || 5000;
 const cors = require("cors");
-app.use(cors());
+
+
+const corsOptions = {
+  origin: 'https://bookmesocial.com',
+  optionsSuccessStatus: 200 // Some legacy browsers (IE11, various SmartTVs) choke on 204
+};
+
+app.use(cors(corsOptions));
 
 app.use(express.json());
 // Require your routes
