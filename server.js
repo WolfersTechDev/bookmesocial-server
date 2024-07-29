@@ -8,9 +8,11 @@ const allowedOrigins = ['http://bookmesocial.com', 'http://admindashboard.bookme
 
 const corsOptions = {
   origin: function (origin, callback) {
+    console.log('Origin:', origin); // Log the origin
     if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
       callback(null, true);
     } else {
+      console.error('Blocked by CORS:', origin); // Log blocked origins
       callback(new Error('Not allowed by CORS'));
     }
   },
