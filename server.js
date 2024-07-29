@@ -4,7 +4,7 @@ const port = process.env.PORT || 5000;
 const cors = require("cors");
 
 
-const allowedOrigins = ['https://bookmesocial.com', 'https://admindashboard.bookmesocial.com'];
+const allowedOrigins = ['http://bookmesocial.com', 'http://admindashboard.bookmesocial.com', 'https://bookmesocial.com', 'https://admindashboard.bookmesocial.com'];
 
 const corsOptions = {
   origin: function (origin, callback) {
