@@ -4,8 +4,16 @@ const port = process.env.PORT || 5000;
 const cors = require("cors");
 
 
+const allowedOrigins = ['https://bookmesocial.com', 'https://admindashboard.bookmesocial.com'];
+
 const corsOptions = {
-  origin: 'https://bookmesocial.com',
+  origin: function (origin, callback) {
+    if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   optionsSuccessStatus: 200 // Some legacy browsers (IE11, various SmartTVs) choke on 204
 };
 
