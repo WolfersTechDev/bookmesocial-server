@@ -4,6 +4,7 @@ const bcrypt = require("bcrypt");
 const { connectToMongoDB } = require("../db");
 const nodemailer = require("nodemailer");
 const validator = require("validator");
+const { json } = require("body-parser");
 
 function isValidEmail(email) {
   return validator.isEmail(email);
@@ -61,7 +62,9 @@ router.get("/creater", async (req, res) => {
 
     const result = await creatorsCollection.find({ approve_status: 0 }).toArray();
 
-    return res.json(result);
+    await client.close();
+
+    return res.status(200).json({ message: "User approved successfully", data: result });
 
   } catch (error) {
     console.error("Error fetching data from the database:", error);
@@ -71,20 +74,44 @@ router.get("/creater", async (req, res) => {
 
 router.get("/approved", async (req, res) => {
   try {
+
     const client = await connectToMongoDB();
     const db = client.db();
 
     const creatorsCollection = db.collection("creators");
 
-    const result = await creatorsCollection.find({ approve_status: 1 }).toArray();
+    const data = await creatorsCollection.find({ approve_status: 1 }).toArray();
 
-    res.json(result);
+    await client.close();
+
+    return res.status(200).json({ message: "User successfully", data: data }); 
 
   } catch (error) {
     console.error("Error fetching data from the database:", error);
-    res.status(500).json({ error: "Internal server error" });
+    return res.status(500).json({ error: "Internal server error" });
   }
 });
+
+
+router.get("/aprover_creater/<itemId>", async (req, res) => {
+  try {
+    const itemId = req.params.itemId;
+    const client = await connectToMongoDB();
+    const db = client.db();
+
+    const creatorsCollection = db.collection("creators");
+
+    const result = await creatorsCollection.findOneAndUpdate({ _id: itemId }, { $set: { approve_status: 1 } });
+
+    await client.close();
+
+    return res.status(200).json({ message: "User approved successfully", data: result });
+
+  } catch (error) {
+    console.error("Error fetching data from the database:", error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+})
 
 router.post("/send-email", async (req, res) => {
   try {

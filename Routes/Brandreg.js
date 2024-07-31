@@ -4,6 +4,7 @@ const bcrypt = require("bcrypt");
 const { connectToMongoDB } = require("../db");
 const nodemailer = require("nodemailer");
 const { ObjectId } = require("mongodb");
+const { json } = require("body-parser");
 
 const generateUserId = () => new ObjectId();
 
@@ -64,7 +65,7 @@ router.get("/", async (req, res) => {
 
     await client.close();
 
-    return res.json(result);
+    return res.status(200).json({ message: "User successfully", data: result }); 
   } catch (error) {
     console.error("Error fetching data from the database:", error);
     return res.status(500).json({ error: "Internal server error" });
@@ -80,12 +81,80 @@ router.get("/approved", async (req, res) => {
 
     await client.close();
 
-    return res.json(result);
+    return res.status(200).json({ message: "User successfully", data: result }); 
   } catch (error) {
     console.error("Error fetching data from the database:", error);
     return res.status(500).json({ error: "Internal server error" });
   }
 });
+
+router.get("/aprover_brand/:itemId", async (req, res) => {
+  try {
+    const itemId = req.params.itemId;
+
+
+    const client = await connectToMongoDB();
+    const db = client.db();
+
+
+    const collection = db.collection("brand_reg");
+    await collection.findOneAndUpdate({ _id: new ObjectId(itemId) }, { $set: { approve_status: 1 } });
+
+    await client.close();
+
+    return res.status(200).json({ message: "Brand approved successfully" });
+
+  } catch (error) {
+    console.error("Error fetching data from the database:", error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+
+router.get("/reject_brand/:itemId", async (req, res) => {
+  try {
+    const itemId = req.params.itemId;
+
+    if(!itemId || !itemId.isValid(user_id)) {
+      return res.status(400).json({ error: "Invalid user ID" });
+    }
+    const client = await connectToMongoDB();
+    const db = client.db();
+
+    const collection = db.collection("brand_reg");
+
+    const result = await collection.deleteOne({ _id: new ObjectId(itemId) });
+
+    await client.close();
+
+    return res.status(200).json({ message: "Brand deleted successfully", data: result });
+
+  } catch (error) {
+    console.error("Error fetching data from the database:", error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+
+router.get("/Brand_details/:itemId", async (req, res) => {
+  try {
+    const itemId = req.params.itemId;
+
+    const client = await connectToMongoDB();
+    const db = client.db();
+
+    const collection = db.collection("brand_reg");
+
+    const result = await collection.findOne({ _id: new ObjectId(itemId) });
+
+    await client.close();
+
+    return res.status(200).json({ message: "Brand Details Fetch successfully", data: result });
+  } catch (error) {
+    console.error("Error fetching data from the database:", error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+})
 
 router.post("/send-email", async (req, res) => {
   try {

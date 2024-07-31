@@ -4,11 +4,16 @@ const port = process.env.PORT || 5000;
 const cors = require("cors");
 
 
-const allowedOrigins = ['http://bookmesocial.com', 'http://admindashboard.bookmesocial.com', 'https://bookmesocial.com', 'https://admindashboard.bookmesocial.com'];
+const allowedOrigins = [
+    'http://bookmesocial.com', 
+    'http://admindashboard.bookmesocial.com', 
+    'https://bookmesocial.com', 
+    'https://admindashboard.bookmesocial.com',
+    'http://localhost:3000',
+  ];
 
 const corsOptions = {
   origin: function (origin, callback) {
-    console.log('Origin:', origin); // Log the origin
     if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
       callback(null, true);
     } else {
