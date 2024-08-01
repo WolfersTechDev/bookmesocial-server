@@ -92,6 +92,9 @@ router.get("/aprover_brand/:itemId", async (req, res) => {
   try {
     const itemId = req.params.itemId;
 
+    if(!itemId || !ObjectId.isValid(itemId)) {
+      return res.status(400).json({ error: "Invalid user ID" });
+    }
 
     const client = await connectToMongoDB();
     const db = client.db();
@@ -115,7 +118,7 @@ router.get("/reject_brand/:itemId", async (req, res) => {
   try {
     const itemId = req.params.itemId;
 
-    if(!itemId || !itemId.isValid(user_id)) {
+    if(!itemId || !ObjectId.isValid(itemId)) {
       return res.status(400).json({ error: "Invalid user ID" });
     }
     const client = await connectToMongoDB();
@@ -136,9 +139,31 @@ router.get("/reject_brand/:itemId", async (req, res) => {
 });
 
 
+// cound total number of brand request
+router.get("/total_brand_request", async (req, res) => {
+  try {
+    const client = await connectToMongoDB();
+    const db = client.db();
+    const collection = db.collection("brand_reg");
+    const result = await collection.countDocuments({ approve_status: 0 });
+
+    await client.close();
+
+    return res.json({message: "Total number of brand request", count: result });
+  } catch (error) {
+    console.error("Error fetching data from the database:", error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+}); 
+
+
 router.get("/Brand_details/:itemId", async (req, res) => {
   try {
     const itemId = req.params.itemId;
+
+    if(!itemId || !ObjectId.isValid(itemId)) {
+      return res.status(400).json({ error: "Invalid user ID" });
+    }
 
     const client = await connectToMongoDB();
     const db = client.db();

@@ -64,17 +64,24 @@ router.post("/login", async (req, res) => {
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
+    await client.close();
+
     if (isPasswordValid) {
       return res.status(200).json({ message: "Login successful" });
     } else {
       return res.status(401).json({ error: "Invalid username or password" });
     }
-
-    await client.close();
   } catch (error) {
     console.error("Error during login:", error);
     return res.status(500).json({ error: "Internal server error" });
   }
+});
+
+
+// logout route
+router.get("/logout", (req, res) => {
+  req.session = null;
+  res.status(200).json({ message: "Logout successful" });
 });
 
 module.exports = router;
