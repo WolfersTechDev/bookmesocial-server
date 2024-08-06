@@ -2,6 +2,9 @@ const express = require("express");
 const app = express();
 const port = process.env.PORT || 5000;
 const cors = require("cors");
+const path = require('path');
+const bodyParser = require('body-parser');
+const fileUpload = require('express-fileupload');
 
 
 const allowedOrigins = [
@@ -27,6 +30,19 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 app.use(express.json());
+app.use('/uploads', express.static(path.join(__dirname, './Routes/uploads')));
+
+
+app.use(bodyParser.json({ limit: '10mb' })); // Adjust the limit as needed
+app.use(bodyParser.urlencoded({ limit: '10mb', extended: true })); // Adjust the limit as needed
+
+
+// Middleware to handle file uploads
+app.use(fileUpload({
+  limits: { fileSize: 50 * 1024 * 1024 }, // 50MB limit
+  createParentPath: true
+}));
+
 // Require your routes
 
 const authRoutes = require("./Routes/AuthRoutes.js");
