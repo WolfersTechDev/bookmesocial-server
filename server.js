@@ -12,7 +12,7 @@ const allowedOrigins = [
     'http://admindashboard.bookmesocial.com', 
     'https://bookmesocial.com', 
     'https://admindashboard.bookmesocial.com',
-    'http://localhost:3000',
+    'https://main.d3l5ahqb3hjvw.amplifyapp.com',
   ];
 
 const corsOptions = {
