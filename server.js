@@ -8,11 +8,7 @@ const fileUpload = require('express-fileupload');
 
 
 const allowedOrigins = [
-    'http://bookmesocial.com', 
-    'http://admindashboard.bookmesocial.com', 
-    'https://bookmesocial.com', 
-    'https://admindashboard.bookmesocial.com',
-    'https://main.d3l5ahqb3hjvw.amplifyapp.com',
+    'https://main.d3l5ahqb3hjvw.amplifyapp.com'
   ];
 
 const corsOptions = {
